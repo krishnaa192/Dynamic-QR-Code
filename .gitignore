@@ -1,0 +1,12 @@
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore SQLite DB
+*.db
+
+# Ignore QR code images (optional)
+static/qr/*.png
+
+# Ignore secret config files
+.env
