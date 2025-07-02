@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f9fc;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background-color: #4A90E2;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      color: #4A90E2;
+      margin-top: 0;
+    }
+
+    .qr-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .qr-list li {
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eaeaea;
+      padding-bottom: 15px;
+    }
+
+    .qr-list img {
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .qr-list a {
+      display: inline-block;
+      margin-top: 8px;
+      color: #4A90E2;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .qr-list a:hover {
+      text-decoration: underline;
+    }
+
+    form {
+      margin-top: 40px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[name="name"],
+    input[name="url"] {
+      padding: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
+
+    button[type="submit"] {
+      background-color: #4A90E2;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #357ABD;
+    }
+
+    .status {
+      font-size: 14px;
+      color: #666;
+      margin-left: 10px;
+    }
+
+    .active {
+      color: green;
+    }
+
+    .inactive {
+      color: red;
+    }
+    #create‑qr‑wrapper {
+    margin-top: 40px;
+  }
+  #create‑qr‑btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.25s;
+  }
+  #create‑qr‑btn:hover { background: #218838; }
+
+  #create‑qr‑form {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    background: #fafafa;
+    display: none;               /* hidden until button click */
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>QR Code Generator</h1>
+    <p>Create and manage your QR codes easily</p>
+  </header>
+
+  <div class="container">
+    <h2>Generated QR Codes</h2>
+    <ul class="qr-list">
+      {% for qr in qr_links %}
+        <li>
+          <strong>{{ qr.name }}</strong> (ID: {{ qr.id }})<br>
+          <small>Destination: {{ qr.destination_url }}</small>
+          <span class="status {% if qr.active %}active{% else %}inactive{% endif %}">
+            {% if qr.active %}[Active]{% else %}[Inactive]{% endif %}
+          </span>
+          <br>
+          <img src="/static/qr/{{ qr.id }}.png" width="120" alt="QR Image for {{ qr.name }}">
+          <br>
+          <a href="/qr?id={{ qr.id }}" target="_blank">Test QR</a>
+          <a href="{{ url_for('download_qr', id=qr.id) }}" download>Download</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div id="create‑qr‑wrapper">
+      <button id="create‑qr‑btn">➕ Create QR Code</button>
+    
+      <form id="create‑qr‑form" action="/create" method="post">
+        <label>QR Name:
+          <input name="name" type="text" required />
+        </label>
+        <label>Destination URL:
+          <input name="url" type="url" required />
+        </label>
+        <button type="submit">Generate QR</button>
+      </form>
+    </div>
+  </div>
+</body>
+<script>
+  // vanilla‑JS toggle
+  document.getElementById('create‑qr‑btn').addEventListener('click', () => {
+    const form = document.getElementById('create‑qr‑form');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  });
+</script>
+</html>
